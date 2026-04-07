@@ -2,13 +2,21 @@ from google import genai
 from google.genai import types
 from PIL import Image
 import os
+from dotenv import load_dotenv
+import time
 
-client = genai.Client(api_key="AIzaSyDKJq_O9WXjVgnVooDGQZjU-6QyfLfglBA")
-# 1. KONFIGURASI API (Dapatkan di aistudio.google.com)
+# Load variabel dari file .env
+load_dotenv()
+API_KEY = os.getenv("GEMINI_API_KEY")
+
+# Pastikan API_KEY terbaca
+if not API_KEY:
+    print("Error: API Key tidak ditemukan di file .env!")
+    exit()
 
 # 2. DEFINISI INSTRUKSI AGEN (System Instruction)
 # Ini adalah "kepribadian" dan "protokol" AI kamu.
-INTRUKSI_MEDIS = """
+INTRUKSI_MEDIS1 = """
 Anda adalah 'Health Agent'. Tugas Anda adalah melakukan triase pasien secara cepat.
 Aturan main:
 1. Analisis keluhan pasien (teks/gambar).
@@ -36,7 +44,7 @@ def jalankan_triase():
                 model="gemini-2.5-flash",
                 contents=user_input,
                 config=types.GenerateContentConfig(
-                    system_instruction=INTRUKSI_MEDIS,
+                    system_instruction=INTRUKSI_MEDIS1,
                     temperature=0.7 # Biar jawaban lebih natural
                 )
             )
