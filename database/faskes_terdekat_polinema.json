@@ -1,0 +1,52 @@
+[
+  {
+    "nama_rs": "Puskesmas Lowokwaru",
+    "kota": "Malang",
+    "alamat": "Jl. Tretes No. 10, Lowokwaru",
+    "telepon": "0341-342891",
+    "tipe": "Puskesmas",
+    "lat": -7.952,
+    "lon": 112.625,
+    "jarak": 1.1892626661764214
+  },
+  {
+    "nama_rs": "RSUB Malang (Rumah Sakit Universitas Brawijaya)",
+    "kota": "Malang",
+    "alamat": "Jl. Soekarno Hatta No. 28",
+    "telepon": "0341-679790",
+    "tipe": "Rumah Sakit Umum",
+    "lat": -7.95,
+    "lon": 112.6,
+    "jarak": 1.757736781660693
+  },
+  {
+    "nama_rs": "RS Bhakti Yasa Malang",
+    "kota": "Malang",
+    "alamat": "Jl. Joyo Raharjo No. 56",
+    "telepon": "0341-484848",
+    "tipe": "Rumah Sakit Umum",
+    "lat": -7.93,
+    "lon": 112.62,
+    "jarak": 1.9202598608316428
+  },
+  {
+    "nama_rs": "Klinik Kesehatan Citra Medika",
+    "kota": "Malang",
+    "alamat": "Jl. Puncak No. 5, Klojen",
+    "telepon": "0341-881888",
+    "tipe": "Klinik Kesehatan",
+    "lat": -7.965,
+    "lon": 112.61,
+    "jarak": 2.1252108913335808
+  },
+  {
+    "nama_rs": "Puskesmas Klojen",
+    "kota": "Malang",
+    "alamat": "Jl. Flamboyan Raya, Klojen",
+    "telepon": "0341-356789",
+    "tipe": "Puskesmas",
+    "lat": -7.968,
+    "lon": 112.615,
+    "jarak": 2.36789994764466
+  }
+]

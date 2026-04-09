@@ -18,3 +18,5 @@ try:
             print(f"- {m.name} (Actions: {m.supported_actions})")
 except Exception as e:
     print(f"Error fatal: {e}")
+    
+    

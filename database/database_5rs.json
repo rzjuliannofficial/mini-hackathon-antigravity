@@ -1,0 +1,62 @@
+[
+    {
+        "nama_rs": "RS Universitas Brawijaya",
+        "provinsi": "Jawa Timur",
+        "kota_kab": "Kota Malang",
+        "alamat": "Jl. Soekarno Hatta Malang",
+        "telepon": "341403000",
+        "pemilik": "Kementerian Lain",
+        "tipe_kelas": "C",
+        "kode_rs": "3573262",
+        "lat": -7.94052,
+        "lon": 112.61815
+    },
+    {
+        "nama_rs": "RS Umum BRI Medika Malang",
+        "provinsi": "Jawa Timur",
+        "kota_kab": "Kota Malang",
+        "alamat": "Jl. Mayjend Panjaitan No. 176",
+        "telepon": "0341-580099",
+        "pemilik": "SWASTA/LAINNYA",
+        "tipe_kelas": "D",
+        "kode_rs": "3573276",
+        "lat": -7.95449,
+        "lon": 112.61749
+    },
+    {
+        "nama_rs": "RS Umum Daerah Dr. Saiful Anwar",
+        "provinsi": "Jawa Timur",
+        "kota_kab": "Kota Malang",
+        "alamat": "Jalan Jaksa Agung Suprapto Nomor 2",
+        "telepon": "0341-362101",
+        "pemilik": "Pemprop",
+        "tipe_kelas": "A",
+        "kode_rs": "3573011",
+        "lat": -7.97232,
+        "lon": 112.63118
+    },
+    {
+        "nama_rs": "RS Umum Permata Bunda",
+        "provinsi": "Jawa Timur",
+        "kota_kab": "Kota Malang",
+        "alamat": "Jl. Soekarno Hatta No. 75 Malang",
+        "telepon": "0341 - 407462",
+        "pemilik": "Perusahaan",
+        "tipe_kelas": "D",
+        "kode_rs": "3573249",
+        "lat": -7.93915,
+        "lon": 112.61864
+    },
+    {
+        "nama_rs": "RS Umum Daerah Ngantang",
+        "provinsi": "Jawa Timur",
+        "kota_kab": "Malang",
+        "alamat": "Jl. Raya Kaumrejo No 47",
+        "telepon": "( 0341 ) 523039",
+        "pemilik": "Pemkab",
+        "tipe_kelas": "D",
+        "kode_rs": "3507260",
+        "lat": -7.86470,
+        "lon": 112.35510
+    }
+]
