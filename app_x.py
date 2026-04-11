@@ -206,10 +206,11 @@ def triase_dengan_gambar_dan_teks():
     lokasi = input("Lokasi pasien (kota/area): ").strip()
     
     # Input path gambar
-    path_gambar = input("Masukkan path/nama file gambar (contoh: gejala.jpg): ").strip()
+    nama_file = input("Masukkan nama file gambar (contoh: gejala.jpg): ").strip()
+    path_gambar = f"img/{nama_file}"
     
     if not os.path.exists(path_gambar):
-        print(f"❌ File '{path_gambar}' tidak ditemukan!")
+        print(f"❌ File '{nama_file}' tidak ditemukan!")
         return
     
     # Input pertanyaan pasien
