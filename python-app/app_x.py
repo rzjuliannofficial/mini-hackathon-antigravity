@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 import time
 import json
 import math
+import requests
 
 # Load variabel dari file .env
 load_dotenv()
@@ -86,22 +87,70 @@ def cari_puskesmas_terdekat(lokasi_user: str):
         }
 
 def kirim_data_ke_faskes(nama_pasien: str, kategori: str, ringkasan_gejala: str, faskes_tujuan: str):
-    """Mengintegrasikan data triase ke sistem JKN/Rumah Sakit untuk pendaftaran otomatis."""
-    print(f"\n[INTEGRASI]: Menghubungkan ke API JKN Mobile...")
+    """Mengintegrasikan data triase ke Laravel API untuk pendaftaran otomatis di database."""
+    print(f"\n[INTEGRASI]: Menghubungkan ke Laravel API...")
     print(f"[LOG]: Mengirim data pasien {nama_pasien} ke {faskes_tujuan}...")
     
-    # Di sini nantinya kamu pakai library 'requests' untuk tembak API Laravel-mu
-    # Simulasi sukses:
-    import random
-    nomor_antrean = f"A-{random.randint(100, 999)}"
-    prioritas_text = "(PRIORITAS)" if kategori in ["MERAH", "KUNING"] else "(NORMAL)"
+    # URL endpoint Laravel (sesuaikan dengan port dan domain Anda)
+    # Jika Laravel di localhost port 8000, gunakan URL ini:
+    URL_API = "http://127.0.0.1:8000/api/triage-registration"
     
-    return {
-        "status": "Terintegrasi",
-        "nomor_antrean": f"{nomor_antrean} {prioritas_text}",
-        "pesan": f"Data triase {kategori} telah diterima {faskes_tujuan}. Dokter jaga telah dinotifikasi.",
-        "waktu_pendaftaran": time.strftime("%Y-%m-%d %H:%M:%S")
+    # Format payload sesuai dengan validasi TriageController
+    payload = {
+        "nama": nama_pasien,
+        "kategori": kategori,
+        "gejala": ringkasan_gejala,
+        "rs_tujuan": faskes_tujuan,
+        "lokasi_user": f"Polinema Malang ({LAT_USER}, {LON_USER})",
+        "jarak_km": 0  # Jarak bisa diisi dari data faskes terdekat jika diperlukan
     }
+    
+    try:
+        # KIRIM DATA KE LARAVEL
+        print(f"[DEBUG]: POST ke {URL_API}")
+        response = requests.post(URL_API, json=payload, timeout=10)
+        
+        # Cek status response
+        if response.status_code in [200, 201]:
+            response_data = response.json()
+            return {
+                "status": "success",
+                "nomor_antrean": response_data.get("nomor_antrean", "N/A"),
+                "prioritas": response_data.get("prioritas", ""),
+                "pesan": response_data.get("pesan", "Data triase berhasil disimpan"),
+                "kategori": response_data.get("kategori", kategori),
+                "rs_tujuan": response_data.get("rs_tujuan", faskes_tujuan),
+                "waktu_pendaftaran": time.strftime("%Y-%m-%d %H:%M:%S")
+            }
+        else:
+            return {
+                "status": "error",
+                "pesan": f"Server Laravel mengembalikan error: {response.status_code}",
+                "detail": response.text
+            }
+            
+    except requests.exceptions.ConnectionError:
+        print("[ERROR]: Tidak bisa terhubung ke Laravel. Pastikan:")
+        print("  1. Laravel sudah di-run: php artisan serve")
+        print("  2. URL endpoint benar: http://127.0.0.1:8000/api/triage-registration")
+        print("  3. Port 8000 tidak digunakan oleh proses lain")
+        return {
+            "status": "error",
+            "pesan": "Koneksi ke Laravel gagal. Pastikan Laravel sedang berjalan di http://127.0.0.1:8000",
+            "fake_nomor_antrean": f"OFFLINE-{time.strftime('%Y%m%d%H%M%S')}"
+        }
+        
+    except requests.exceptions.Timeout:
+        return {
+            "status": "error",
+            "pesan": "Request timeout - Laravel memakan waktu terlalu lama merespons"
+        }
+        
+    except Exception as e:
+        return {
+            "status": "error",
+            "pesan": f"Koneksi gagal: {str(e)}"
+        }
 
 # --- LANGKAH 2: KONFIGURASI AGEN ---
 
