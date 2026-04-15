@@ -197,14 +197,12 @@ tools_kesehatan = [cari_puskesmas_terdekat, kirim_data_ke_faskes]
 def triase_dengan_teks_saja():
     """Mode interaktif: pertanyaan teks saja"""
     print("\n" + "="*60)
-    print("📝 MODE TRIASE TEXT (Ketik 'keluar' untuk berhenti)")
+    print("📝 MODE TRIASE TEXT")
     print("="*60 + "\n")
     
     while True:
         print("📋 Informasi yang dibutuhkan:")
         nama_pasien = input("Nama pasien: ").strip()
-        if nama_pasien.lower() == 'keluar':
-            break
         
         lokasi = input("Lokasi pasien (kota/area): ").strip()
         pertanyaan = input("Keluhan/gejala pasien: ").strip()
@@ -230,13 +228,79 @@ Lakukan triase berdasarkan informasi di atas.
                 config=types.GenerateContentConfig(
                     system_instruction=INSTRUKSI_MEDIS_UNIFIED,
                     tools=tools_kesehatan,
-                    automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=False),
+                    automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True),
                     temperature=0.3
                 )
             )
             
             print(f"\n🏥 HASIL TRIASE:\n{response.text}\n")
             print("-" * 60 + "\n")
+            
+            # Cek apakah ada rekomendasi rujukan (KUNING/MERAH)
+            hasil_triase = response.text.lower()
+            if 'merah' in hasil_triase or 'kuning' in hasil_triase or 'gawat' in hasil_triase or 'darurat' in hasil_triase:
+                print("\n⚠️  Pasien memerlukan penanganan medis darurat/segera!")
+                konfirmasi = input("\n🏥 Apakah ingin dirujuk ke rumah sakit/puskesmas terdekat? (y/n): ").strip().lower()
+                
+                if konfirmasi == 'y':
+                    print("\n🔍 Mencari fasilitas kesehatan terdekat...\n")
+                    
+                    # Panggil tools secara manual
+                    hasil_faskes = cari_puskesmas_terdekat(lokasi)
+                    if hasil_faskes['status'] == 'success':
+                        print("📍 Fasilitas Kesehatan Terdekat:")
+                        for faskes in hasil_faskes['data']:
+                            print(f"  {faskes['nomor']}. {faskes['nama']} ({faskes['jarak']})")
+                            print(f"     📍 {faskes['alamat']}")
+                            print(f"     ☎️ {faskes['telepon']}")
+                        
+                        # Tanya pilihan faskes
+                        print("\n" + "-" * 60)
+                        pilihan_faskes = input("\nPilih nomor faskes untuk dirujuk (atau tekan Enter untuk membatalkan): ").strip()
+                        
+                        if pilihan_faskes.isdigit():
+                            nomor = int(pilihan_faskes)
+                            # Validasi pilihan
+                            faskes_terpilih = None
+                            for faskes in hasil_faskes['data']:
+                                if faskes['nomor'] == nomor:
+                                    faskes_terpilih = faskes
+                                    break
+                            
+                            if faskes_terpilih:
+                                print(f"\n📤 Mengirim data ke {faskes_terpilih['nama']}...")
+                                # Ekstrak kategori dari hasil triase
+                                kategori = "MERAH" if "merah" in hasil_triase or "gawat" in hasil_triase else "KUNING"
+                                
+                                hasil_kirim = kirim_data_ke_faskes(
+                                    nama_pasien,
+                                    kategori,
+                                    pertanyaan,
+                                    faskes_terpilih['nama']
+                                )
+                                
+                                if hasil_kirim['status'] == 'success':
+                                    print(f"\n✅ PENDAFTARAN BERHASIL!")
+                                    print(f"   📋 Nomor Antrean: {hasil_kirim['nomor_antrean']}")
+                                    print(f"   🏥 Faskes Tujuan: {hasil_kirim['rs_tujuan']}")
+                                    print(f"   ⏰ Waktu Pendaftaran: {hasil_kirim['waktu_pendaftaran']}")
+                                else:
+                                    print(f"\n⚠️  Gagal mengirim data: {hasil_kirim['pesan']}")
+                            else:
+                                print("❌ Pilihan tidak valid!")
+                        else:
+                            print("❌ Rujukan dibatalkan.")
+                    else:
+                        print(f"❌ {hasil_faskes['pesan']}")
+                else:
+                    print("❌ Rujukan ditolak. Pastikan untuk segera mencari bantuan medis jika kondisi memburuk.")
+            
+            # Tanya apakah ingin triase lagi
+            lanjut = input("\n🔄 Lakukan triase lagi? (y/n): ").strip().lower()
+            if lanjut != 'y':
+                print("↩️  Kembali ke menu utama...\n")
+                break
+                
         except Exception as e:
             if "503" in str(e):
                 print("Server sibuk. Mencoba lagi dalam 5 detik...")
@@ -250,33 +314,34 @@ def triase_dengan_gambar_dan_teks():
     print("📸 MODE TRIASE VISUAL (Gambar + Teks)")
     print("="*60 + "\n")
     
-    # Input informasi pasien
-    nama_pasien = input("Nama pasien: ").strip()
-    lokasi = input("Lokasi pasien (kota/area): ").strip()
-    
-    # Input path gambar
-    nama_file = input("Masukkan nama file gambar (contoh: gejala.jpg): ").strip()
-    path_gambar = f"img/{nama_file}"
-    
-    if not os.path.exists(path_gambar):
-        print(f"❌ File '{nama_file}' tidak ditemukan!")
-        return
-    
-    # Input pertanyaan pasien
-    pertanyaan = input("Deskripsi gejala/keluhan pasien: ").strip()
-    
-    if not nama_pasien or not lokasi or not pertanyaan:
-        print("❌ Semua informasi harus diisi!")
-        return
-    
-    try:
-        # Buka gambar
-        img = Image.open(path_gambar)
-        print(f"\n✓ Gambar berhasil dibaca: {path_gambar}")
-        print("🔄 Sedang menganalisis gambar dan teks...\n")
+    while True:
+        # Input informasi pasien
+        nama_pasien = input("Nama pasien: ").strip()
+        lokasi = input("Lokasi pasien (kota/area): ").strip()
         
-        # Buat prompt lengkap dengan info pasien
-        prompt_lengkap = f"""
+        # Input path gambar
+        nama_file = input("Masukkan nama file gambar (contoh: gejala.jpg): ").strip()
+        path_gambar = f"img/{nama_file}"
+        
+        if not os.path.exists(path_gambar):
+            print(f"❌ File '{nama_file}' tidak ditemukan!\n")
+            continue
+        
+        # Input pertanyaan pasien
+        pertanyaan = input("Deskripsi gejala/keluhan pasien: ").strip()
+        
+        if not nama_pasien or not lokasi or not pertanyaan:
+            print("❌ Semua informasi harus diisi!\n")
+            continue
+        
+        try:
+            # Buka gambar
+            img = Image.open(path_gambar)
+            print(f"\n✓ Gambar berhasil dibaca: {path_gambar}")
+            print("🔄 Sedang menganalisis gambar dan teks...\n")
+            
+            # Buat prompt lengkap dengan info pasien
+            prompt_lengkap = f"""
 INFORMASI PASIEN:
 - Nama: {nama_pasien}
 - Lokasi: {lokasi}
@@ -284,24 +349,89 @@ INFORMASI PASIEN:
 
 Analisis gambar di atas beserta informasi pasien untuk melakukan triase.
 """
-        
-        # Analisis gambar + teks sekaligus dengan tools
-        response = client.models.generate_content(
-            model="gemini-2.5-flash",
-            contents=[img, prompt_lengkap],
-            config=types.GenerateContentConfig(
-                system_instruction=INSTRUKSI_MEDIS_UNIFIED,
-                tools=tools_kesehatan,
-                automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=False),
-                temperature=0.3
+            
+            # Analisis gambar + teks sekaligus dengan tools
+            response = client.models.generate_content(
+                model="gemini-2.5-flash",
+                contents=[img, prompt_lengkap],
+                config=types.GenerateContentConfig(
+                    system_instruction=INSTRUKSI_MEDIS_UNIFIED,
+                    tools=tools_kesehatan,
+                    automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True),
+                    temperature=0.3
+                )
             )
-        )
-        
-        print(f"🏥 HASIL TRIASE VISUAL:\n{response.text}\n")
-        print("-" * 60)
-        
-    except Exception as e:
-        print(f"❌ Error: {e}")
+            
+            print(f"🏥 HASIL TRIASE VISUAL:\n{response.text}\n")
+            print("-" * 60 + "\n")
+            
+            # Cek apakah ada rekomendasi rujukan (KUNING/MERAH)
+            hasil_triase = response.text.lower()
+            if 'merah' in hasil_triase or 'kuning' in hasil_triase or 'gawat' in hasil_triase or 'darurat' in hasil_triase:
+                print("\n⚠️  Pasien memerlukan penanganan medis darurat/segera!")
+                konfirmasi = input("\n🏥 Apakah ingin dirujuk ke rumah sakit/puskesmas terdekat? (y/n): ").strip().lower()
+                
+                if konfirmasi == 'y':
+                    print("\n🔍 Mencari fasilitas kesehatan terdekat...\n")
+                    
+                    # Panggil tools secara manual
+                    hasil_faskes = cari_puskesmas_terdekat(lokasi)
+                    if hasil_faskes['status'] == 'success':
+                        print("📍 Fasilitas Kesehatan Terdekat:")
+                        for faskes in hasil_faskes['data']:
+                            print(f"  {faskes['nomor']}. {faskes['nama']} ({faskes['jarak']})")
+                            print(f"     📍 {faskes['alamat']}")
+                            print(f"     ☎️ {faskes['telepon']}")
+                        
+                        # Tanya pilihan faskes
+                        print("\n" + "-" * 60)
+                        pilihan_faskes = input("\nPilih nomor faskes untuk dirujuk (atau tekan Enter untuk membatalkan): ").strip()
+                        
+                        if pilihan_faskes.isdigit():
+                            nomor = int(pilihan_faskes)
+                            # Validasi pilihan
+                            faskes_terpilih = None
+                            for faskes in hasil_faskes['data']:
+                                if faskes['nomor'] == nomor:
+                                    faskes_terpilih = faskes
+                                    break
+                            
+                            if faskes_terpilih:
+                                print(f"\n📤 Mengirim data ke {faskes_terpilih['nama']}...")
+                                # Ekstrak kategori dari hasil triase
+                                kategori = "MERAH" if "merah" in hasil_triase or "gawat" in hasil_triase else "KUNING"
+                                
+                                hasil_kirim = kirim_data_ke_faskes(
+                                    nama_pasien,
+                                    kategori,
+                                    pertanyaan,
+                                    faskes_terpilih['nama']
+                                )
+                                
+                                if hasil_kirim['status'] == 'success':
+                                    print(f"\n✅ PENDAFTARAN BERHASIL!")
+                                    print(f"   📋 Nomor Antrean: {hasil_kirim['nomor_antrean']}")
+                                    print(f"   🏥 Faskes Tujuan: {hasil_kirim['rs_tujuan']}")
+                                    print(f"   ⏰ Waktu Pendaftaran: {hasil_kirim['waktu_pendaftaran']}")
+                                else:
+                                    print(f"\n⚠️  Gagal mengirim data: {hasil_kirim['pesan']}")
+                            else:
+                                print("❌ Pilihan tidak valid!")
+                        else:
+                            print("❌ Rujukan dibatalkan.")
+                    else:
+                        print(f"❌ {hasil_faskes['pesan']}")
+                else:
+                    print("❌ Rujukan ditolak. Pastikan untuk segera mencari bantuan medis jika kondisi memburuk.")
+            
+            # Tanya apakah ingin triase lagi
+            lanjut = input("\n🔄 Lakukan triase lagi? (y/n): ").strip().lower()
+            if lanjut != 'y':
+                print("↩️  Kembali ke menu utama...\n")
+                break
+            
+        except Exception as e:
+            print(f"❌ Error: {e}\n")
 
 def triase_cepat_demo():
     """Mode demo: Simulasi triase cepat dengan kasus-kasus contoh"""
@@ -359,14 +489,72 @@ Lakukan triase lengkap dengan pencarian lokasi fasilitas kesehatan terdekat.
             config=types.GenerateContentConfig(
                 system_instruction=INSTRUKSI_MEDIS_UNIFIED,
                 tools=tools_kesehatan,
-                automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=False),
+                automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True),
                 temperature=0.3
             )
         )
         
         print(f"🏥 HASIL TRIASE:\n{response.text}\n")
-        print("-" * 60)
+        print("-" * 60 + "\n")
         
+        # Cek apakah ada rekomendasi rujukan (KUNING/MERAH)
+        hasil_triase = response.text.lower()
+        if 'merah' in hasil_triase or 'kuning' in hasil_triase or 'gawat' in hasil_triase or 'darurat' in hasil_triase:
+            print("⚠️  Pasien memerlukan penanganan medis darurat/segera!")
+            konfirmasi = input("\n🏥 Apakah ingin dirujuk ke rumah sakit/puskesmas terdekat? (y/n): ").strip().lower()
+            
+            if konfirmasi == 'y':
+                print("\n🔍 Mencari fasilitas kesehatan terdekat...\n")
+                
+                # Panggil tools secara manual
+                hasil_faskes = cari_puskesmas_terdekat(kasus['lokasi'])
+                if hasil_faskes['status'] == 'success':
+                    print("📋 Fasilitas Kesehatan Terdekat:")
+                    for faskes in hasil_faskes['data']:
+                        print(f"  {faskes['nomor']}. {faskes['nama']} ({faskes['jarak']})")
+                        print(f"     📍 {faskes['alamat']}")
+                        print(f"     ☎️ {faskes['telepon']}")
+                    
+                    # Tanya pilihan faskes
+                    print("\n" + "-" * 60)
+                    pilihan_faskes = input("\nPilih nomor faskes untuk dirujuk (atau tekan Enter untuk membatalkan): ").strip()
+                    
+                    if pilihan_faskes.isdigit():
+                        nomor = int(pilihan_faskes)
+                        # Validasi pilihan
+                        faskes_terpilih = None
+                        for faskes in hasil_faskes['data']:
+                            if faskes['nomor'] == nomor:
+                                faskes_terpilih = faskes
+                                break
+                        
+                        if faskes_terpilih:
+                            print(f"\n📤 Mengirim data ke {faskes_terpilih['nama']}...")
+                            # Ekstrak kategori dari hasil triase
+                            kategori = "MERAH" if "merah" in hasil_triase or "gawat" in hasil_triase else "KUNING"
+                            
+                            hasil_kirim = kirim_data_ke_faskes(
+                                kasus['nama'],
+                                kategori,
+                                kasus['gejala'],
+                                faskes_terpilih['nama']
+                            )
+                            
+                            if hasil_kirim['status'] == 'success':
+                                print(f"\n✅ PENDAFTARAN BERHASIL!")
+                                print(f"   📋 Nomor Antrean: {hasil_kirim['nomor_antrean']}")
+                                print(f"   🏥 Faskes Tujuan: {hasil_kirim['rs_tujuan']}")
+                                print(f"   ⏰ Waktu Pendaftaran: {hasil_kirim['waktu_pendaftaran']}")
+                            else:
+                                print(f"\n⚠️  Gagal mengirim data: {hasil_kirim['pesan']}")
+                        else:
+                            print("❌ Pilihan tidak valid!")
+                    else:
+                        print("❌ Rujukan dibatalkan.")
+                else:
+                    print(f"❌ {hasil_faskes['pesan']}")
+            else:
+                print("❌ Rujukan ditolak. Pastikan untuk segera mencari bantuan medis jika kondisi memburuk.")       
     except Exception as e:
         if "503" in str(e):
             print("Server sibuk. Mencoba lagi dalam 5 detik...")
