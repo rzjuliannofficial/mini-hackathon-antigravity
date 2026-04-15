@@ -232,7 +232,7 @@ php artisan migrate --fresh  # Recreate all tables
 .\venv\Scripts\Activate.ps1
 pip install requests
 ```
-
+-
 ---
 
 ## 🚀 NEXT STEPS (Advanced)
