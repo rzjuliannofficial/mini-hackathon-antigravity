@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lampiran Mockup Cak DONE</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#1E40AF',
+                        secondary: '#0F172A',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Styling untuk membuat background simulasi kertas A4 */
+        body {
+            background-color: #cbd5e1;
+            padding: 2rem;
+            display: flex;
+            justify-content: center;
+        }
+        .a4-paper {
+            width: 210mm;
+            min-height: 297mm;
+            background: white;
+            padding: 20mm;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        /* Styling untuk Frame Handphone */
+        .phone-frame {
+            width: 300px;
+            height: 620px;
+            border: 12px solid #0f172a;
+            border-radius: 2.5rem;
+            position: relative;
+            overflow: hidden;
+            background: #f8fafc;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        /* Poni/Notch HP */
+        .notch {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 25px;
+            background: #0f172a;
+            border-bottom-left-radius: 1rem;
+            border-bottom-right-radius: 1rem;
+            z-index: 50;
+        }
+        /* Sembunyikan scrollbar di dalam HP */
+        .phone-content::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Kertas A4 Container -->
+    <div class="a4-paper">
+        
+        <!-- Header Lampiran -->
+        <div class="mb-10 text-center border-b-2 border-slate-200 pb-6">
+            <h1 class="text-2xl font-bold text-slate-800 uppercase tracking-wide">Lampiran 1</h1>
+            <h2 class="text-xl font-semibold text-slate-600 mt-2">Visualisasi Antarmuka (User Interface) Cak DONE✔️</h2>
+            <p class="text-sm text-slate-500 mt-3 max-w-2xl mx-auto">
+                Berikut adalah rancangan tampilan aplikasi mobile Cak DONE✔️ yang mendemonstrasikan implementasi Agentic AI untuk mereduksi beban administratif UMKM Kuliner dan mengelola risiko inventaris.
+            </p>
+        </div>
+
+        <!-- Container untuk 2 HP berdampingan -->
+        <div class="flex flex-row justify-center gap-12 items-start mt-8">
+
+            <!-- ========================================== -->
+            <!-- HP 1: DASHBOARD & EXPIRY WATCHDOG          -->
+            <!-- ========================================== -->
+            <div class="flex flex-col items-center">
+                <div class="phone-frame flex flex-col">
+                    <div class="notch"></div>
+                    
+                    <!-- App Header -->
+                    <div class="bg-blue-700 text-white pt-10 pb-4 px-5 rounded-b-2xl shadow-md z-10 shrink-0">
+                        <div class="flex justify-between items-center mb-4">
+                            <div>
+                                <p class="text-xs text-blue-200">Selamat datang, Bos!</p>
+                                <h3 class="font-bold text-lg">Bebek Goreng Cak Ali</h3>
+                            </div>
+                            <img src="https://ui-avatars.com/api/?name=CA&background=fff&color=1d4ed8" class="w-10 h-10 rounded-full border-2 border-blue-400">
+                        </div>
+                        
+                        <!-- Saldo Card -->
+                        <div class="bg-white/10 p-3 rounded-xl backdrop-blur-sm border border-white/20">
+                            <p class="text-xs text-blue-100 mb-1">Total Kas Tersedia</p>
+                            <h2 class="text-2xl font-bold">Rp 4.250.000</h2>
+                            <div class="flex items-center gap-2 mt-2 text-xs">
+                                <span class="bg-green-500/20 text-green-300 px-2 py-1 rounded"><i class="fas fa-arrow-up"></i> Rp 850rb</span>
+                                <span class="bg-red-500/20 text-red-300 px-2 py-1 rounded"><i class="fas fa-arrow-down"></i> Rp 320rb</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Scrollable Content -->
+                    <div class="phone-content flex-1 overflow-y-auto p-4 pb-20 bg-slate-50">
+                        
+                        <!-- Predictive AI Agent Alert -->
+                        <div class="bg-blue-50 border border-blue-100 rounded-xl p-3 mb-5 flex items-start gap-3 shadow-sm">
+                            <div class="bg-blue-100 text-blue-600 w-8 h-8 rounded-full flex items-center justify-center shrink-0">
+                                <i class="fas fa-lightbulb"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-xs font-bold text-blue-800">Cak DONE Insight</h4>
+                                <p class="text-[10px] text-slate-600 mt-1">Saldo kas aman. Namun besok ada tagihan listrik Rp 500.000. Tahan dulu belanja bahan baku besar hari ini.</p>
+                            </div>
+                        </div>
+
+                        <!-- Expiry Watchdog Section -->
+                        <h4 class="font-bold text-slate-700 text-sm mb-3 flex items-center gap-2">
+                            <i class="fas fa-clock text-amber-500"></i> Expiry Watchdog (Stok)
+                        </h4>
+                        
+                        <div class="space-y-3">
+                            <!-- Item Kritis (Merah) -->
+                            <div class="bg-white p-3 rounded-xl border border-red-200 shadow-sm relative overflow-hidden">
+                                <div class="absolute top-0 right-0 bg-red-500 text-white text-[9px] font-bold px-2 py-1 rounded-bl-lg animate-pulse">BESOK BASI!</div>
+                                <div class="flex items-center gap-3 mt-2">
+                                    <div class="bg-red-50 text-red-500 w-10 h-10 rounded-lg flex items-center justify-center text-xl shrink-0"><i class="fas fa-hotdog"></i></div>
+                                    <div class="flex-1">
+                                        <h5 class="text-xs font-bold text-slate-800">Sosis Sapi Kanzler</h5>
+                                        <p class="text-[10px] text-slate-500">Sisa: 5 Bungkus</p>
+                                    </div>
+                                </div>
+                                <button class="mt-3 w-full bg-red-50 text-red-600 text-[10px] font-bold py-1.5 rounded-lg border border-red-100 hover:bg-red-100">
+                                    Setel Diskon 20% Otomatis
+                                </button>
+                            </div>
+
+                            <!-- Item Warning (Kuning) -->
+                            <div class="bg-white p-3 rounded-xl border border-amber-200 shadow-sm relative overflow-hidden">
+                                <div class="absolute top-0 right-0 bg-amber-500 text-white text-[9px] font-bold px-2 py-1 rounded-bl-lg">3 HARI LAGI</div>
+                                <div class="flex items-center gap-3 mt-2">
+                                    <div class="bg-amber-50 text-amber-500 w-10 h-10 rounded-lg flex items-center justify-center text-xl shrink-0"><i class="fas fa-drumstick-bite"></i></div>
+                                    <div class="flex-1">
+                                        <h5 class="text-xs font-bold text-slate-800">Ayam Potong Frozen</h5>
+                                        <p class="text-[10px] text-slate-500">Sisa: 10 Kg</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    
+                    <!-- Fake Bottom Nav -->
+                    <div class="absolute bottom-0 w-full bg-white border-t border-slate-200 flex justify-around py-3 pb-6 text-slate-400 text-xs">
+                        <div class="flex flex-col items-center text-blue-600"><i class="fas fa-home text-lg mb-1"></i> Beranda</div>
+                        <div class="flex flex-col items-center"><i class="fas fa-box text-lg mb-1"></i> Stok</div>
+                        <div class="flex flex-col items-center text-align"><i class="fas fa-robot text-[35px] mb-1"></i> Catat</div>
+                        <div class="flex flex-col items-center"><i class="fas fa-wallet text-lg mb-1"></i> Keuangan</div>
+                        <div class="flex flex-col items-center"><i class="fas fa-chart-bar text-lg mb-1"></i> Laporan</div>
+                    </div>
+                </div>
+                <!-- Keterangan Gambar 1 -->
+                <p class="mt-4 text-sm font-semibold text-slate-700 max-w-[300px] text-center">
+                    Gambar 1. Tampilan Dashboard Proaktif & Fitur <span class="text-amber-600 italic">Expiry Watchdog</span>
+                </p>
+            </div>
+
+            <!-- ========================================== -->
+            <!-- HP 2: FITUR CATAT (MULTIMODAL AI)          -->
+            <!-- ========================================== -->
+            <div class="flex flex-col items-center">
+                <div class="phone-frame flex flex-col bg-[#121212]">
+                    <div class="notch"></div>
+                    
+                    <!-- Chat Header -->
+                    <div class="bg-[#1e1e1e] border-b border-[#333] pt-10 pb-3 px-4 z-10 shrink-0 flex items-center gap-3">
+                        <div class="bg-blue-600 w-8 h-8 rounded-full flex items-center justify-center text-white"><i class="fas fa-robot"></i></div>
+                        <div>
+                            <h3 class="font-bold text-white text-sm">Asisten Cak DONE</h3>
+                            <p class="text-[10px] text-green-400 flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-green-400 inline-block"></span> Siap mencatat (Gemini 2.5 Flash)</p>
+                        </div>
+                    </div>
+
+                    <!-- Chat/Process Area -->
+                    <div class="phone-content flex-1 overflow-y-auto p-4 pb-24 flex flex-col gap-4">
+                        
+                        <!-- AI Greeting -->
+                        <div class="self-start max-w-[85%]">
+                            <div class="bg-[#2a2a2a] text-slate-200 p-3 rounded-2xl rounded-tl-sm text-xs border border-[#333]">
+                                Halo Bos! Hari ini ada transaksi yang perlu saya catat? Bisa ketik, kirim foto nota, atau pakai suara ya! 🎤📸
+                            </div>
+                        </div>
+
+                        <!-- User Voice Input Simulation -->
+                        <div class="self-end max-w-[85%] mt-2">
+                            <div class="bg-blue-600 text-white p-3 rounded-2xl rounded-tr-sm text-xs shadow-md">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <i class="fas fa-microphone-alt"></i> <span class="font-semibold text-[10px] opacity-80">Transkripsi Suara:</span>
+                                </div>
+                                "Cak, baru laku ayam geprek 5 porsi, total seratus ribu pakai uang tunai."
+                            </div>
+                        </div>
+
+                        <!-- AI Processing Result -->
+                        <div class="self-start w-full mt-2">
+                            <div class="bg-[#1e1e1e] border border-green-500/30 p-3 rounded-2xl rounded-tl-sm shadow-md">
+                                <div class="flex items-center gap-2 text-green-400 font-bold text-xs mb-2">
+                                    <i class="fas fa-check-circle"></i> Selesai Dicatat! (Jurnal Otonom)
+                                </div>
+                                <div class="bg-[#121212] rounded-lg p-2 text-[11px] text-slate-300 font-mono space-y-1">
+                                    <div class="flex justify-between"><span class="text-slate-500">Tipe:</span> <span class="text-green-400">Pemasukan</span></div>
+                                    <div class="flex justify-between"><span class="text-slate-500">Item:</span> <span>Ayam Geprek (5x)</span></div>
+                                    <div class="flex justify-between"><span class="text-slate-500">Nominal:</span> <span>Rp 100.000</span></div>
+                                    <div class="flex justify-between"><span class="text-slate-500">Masuk ke:</span> <span>Kas Tunai/Laci</span></div>
+                                </div>
+                                <p class="text-[10px] text-slate-500 mt-2 text-center">Data kas dan stok ayam otomatis diperbarui.</p>
+                            </div>
+                        </div>
+
+                    </div>
+                    
+                    <!-- INPUT BAR (Voice to Journal) -->
+                    <div class="absolute bottom-0 w-full bg-gradient-to-t from-[#121212] via-[#121212] to-transparent pt-8 pb-6 px-4">
+                        <div class="bg-[#2a2a2a] rounded-full p-1.5 flex items-center gap-1 border border-[#444] shadow-xl">
+                            <!-- Camera / Nota button -->
+                            <button class="w-9 h-9 rounded-full flex items-center justify-center text-slate-400 hover:text-white hover:bg-[#444] transition shrink-0">
+                                <i class="fas fa-camera text-sm"></i>
+                            </button>
+                            <!-- Input Field -->
+                            <input type="text" placeholder="Catat transaksi..." style="width: 100%; height: 10px;" class="flex bg-transparent border-none outline-none text-white text-xs px-2 placeholder-slate-500">
+                            <button class="w-9 h-9 rounded-full flex items-center justify-center text-white hover:bg-blue-500 transition shrink-0 shadow-[0_0_10px_rgba(37,99,235,0.5)]">
+                                <i class="fas fa-microphone"></i>
+                            </button>
+                            <button class="w-9 h-9 rounded-full bg-blue-600 flex items-center justify-center text-white hover:bg-blue-500 transition shrink-0 shadow-[0_0_10px_rgba(37,99,235,0.5)]">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                            <!-- Voice Button (Highlighted) -->
+                        </div>
+                        <div class="text-center mt-2">
+                            <span class="text-[8px] text-slate-500 uppercase tracking-widest font-bold">Multimodal Entry AI</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Keterangan Gambar 2 -->
+                <p class="mt-4 text-sm font-semibold text-slate-700 max-w-[300px] text-center">
+                    Gambar 2. Tampilan <span class="text-blue-600 italic">Smart Multimodal Entry</span> (Pencatatan otonom via suara)
+                </p>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html>
